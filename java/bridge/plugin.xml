@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin id="com.vpce.bridge"
+        name="vpce bridge"
+        provider="vpce"
+        version="0.2.0"
+        description="Reflective Open API bridge for headless automation."
+        class="vpce.bridge.Bridge">
+    <runtime path="lib"/>
+</plugin>

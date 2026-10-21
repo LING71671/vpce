@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "vpce"
+version = "0.3.0"
+description = "Headless control surface for Visual Paradigm: read projects, write models, draw any diagram from a JSON spec"
+readme = "README.md"
+requires-python = ">=3.8"
+license = { text = "MIT" }
+dependencies = []
+
+[project.scripts]
+vpce = "vpce.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["vpce*"]
+
+[tool.setuptools.package-data]
+vpce = ["core/model_types.json"]

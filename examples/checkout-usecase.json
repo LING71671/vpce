@@ -1,0 +1,22 @@
+{
+  "diagram": "UseCaseDiagram",
+  "name": "Checkout Use Cases",
+  "nodes": [
+    {"id": "customer", "type": "Actor", "name": "Customer"},
+    {"id": "clerk", "type": "Actor", "name": "Clerk"},
+    {"id": "browse", "type": "UseCase", "name": "Browse Catalog"},
+    {"id": "cart", "type": "UseCase", "name": "Manage Cart"},
+    {"id": "checkout", "type": "UseCase", "name": "Checkout"},
+    {"id": "pay", "type": "UseCase", "name": "Pay"},
+    {"id": "refund", "type": "UseCase", "name": "Refund"}
+  ],
+  "edges": [
+    {"from": "customer", "to": "browse", "type": "Association"},
+    {"from": "customer", "to": "cart", "type": "Association"},
+    {"from": "customer", "to": "checkout", "type": "Association"},
+    {"from": "clerk", "to": "refund", "type": "Association"},
+    {"from": "checkout", "to": "pay", "type": "Association", "name": "include"},
+    {"from": "refund", "to": "pay", "type": "Association", "name": "include"}
+  ],
+  "layout": {"columns": 3, "x": 40, "y": 60}
+}

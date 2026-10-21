@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+java/bridge/build/
+java/bridge/out/
+demo/*.bak*
+demo/*.vpp
