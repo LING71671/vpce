@@ -4,12 +4,33 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "vpce"
-version = "0.3.0"
-description = "Headless control surface for Visual Paradigm: read projects, write models, draw any diagram from a JSON spec"
+version = "1.0.0"
+description = "Headless control surface for Visual Paradigm: read projects, write models, draw any supported diagram from a JSON spec"
 readme = "README.md"
 requires-python = ">=3.8"
 license = { text = "MIT" }
+authors = [{ name = "LING71671" }]
+keywords = ["visual-paradigm", "uml", "diagram", "mcp", "model-context-protocol", "automation", "headless"]
 dependencies = []
+
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Win32 (MS Windows)",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: Microsoft :: Windows",
+    "Programming Language :: Java",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Topic :: Software Development :: Code Generators",
+    "Topic :: Software Development :: Documentation",
+]
+
+[project.urls]
+Homepage = "https://github.com/LING71671/vpce"
+Documentation = "https://github.com/LING71671/vpce/blob/main/docs/API.md"
+Changelog = "https://github.com/LING71671/vpce/blob/main/CHANGELOG.md"
+Issues = "https://github.com/LING71671/vpce/issues"
 
 [project.scripts]
 vpce = "vpce.cli:main"
@@ -18,4 +39,4 @@ vpce = "vpce.cli:main"
 include = ["vpce*"]
 
 [tool.setuptools.package-data]
-vpce = ["core/model_types.json"]
+vpce = ["core/model_types.json", "core/diagram_types.json"]

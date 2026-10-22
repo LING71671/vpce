@@ -12,7 +12,8 @@ import struct
 import sys
 import tempfile
 
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(
+    os.path.abspath(__file__)))))
 
 from vpce.app import App  # noqa: E402
 from vpce.core.spec import Spec  # noqa: E402

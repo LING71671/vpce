@@ -230,8 +230,8 @@ stdio 启动 MCP 服务。`--read-only` 隐藏 5 个写工具。
     "vpce": {
       "command": "python",
       "args": ["-m", "vpce", "mcp"],
-      "cwd": "E:/vpce",
-      "env": {"VPCE_HOME": "E:/Visual Paradigm CE 18.1"}
+      "cwd": "/path/to/vpce",
+      "env": {"VPCE_HOME": "/path/to/Visual Paradigm"}
     }
   }
 }

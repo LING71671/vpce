@@ -16,4 +16,4 @@ Layering (imports only go downward):
 process or reads the environment.
 """
 
-__version__ = '0.3.0'
+__version__ = '1.0.0'

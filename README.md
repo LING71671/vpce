@@ -19,6 +19,8 @@ vpce draw examples/order-system.json --project demo.vpp --out png/
 | `ARCHITECTURE.md` | 五层分层与依赖规则、加功能时的落点 |
 | `COVERAGE.md` | 覆盖率台账（脚本生成，不许手改） |
 | `skills/vpce-diagram-authoring/` | 给 AI 用的技能包：选型表、规格写法、验收清单、报错处置 |
+| `tools/README.md` | 十个测量/诊断脚本各自做什么 |
+| `README.en.md` · `CHANGELOG.md` · `CONTRIBUTING.md` · `SECURITY.md` | 英文说明、版本记录、贡献指南、安全策略 |
 
 ---
 
@@ -39,7 +41,8 @@ python -m vpce bridge --install    # 装到 %APPDATA%\VisualParadigm\plugins\com
 python -m vpce status              # 确认能找到安装与命令
 ```
 
-安装位置用 `--vp-home` → `VPCE_HOME` → 常见默认路径 依次解析。
+安装位置解析顺序：`--vp-home` → `VPCE_HOME` / `VP_HOME` → 安装器写的注册表项 →
+扫常见安装根目录。不写死盘符。
 
 ## 3. 画图：规格即图纸
 
@@ -112,12 +115,14 @@ vpce mcp                              启动 MCP（--read-only 隐藏写工具�
     "vpce": {
       "command": "python",
       "args": ["-m", "vpce", "mcp"],
-      "cwd": "E:/vpce",
-      "env": { "VPCE_HOME": "E:/Visual Paradigm CE 18.1" }
+      "cwd": "/path/to/vpce",
+      "env": { "VPCE_HOME": "/path/to/Visual Paradigm" }
     }
   }
 }
 ```
+
+`VPCE_HOME` 可以不填——会自动从注册表和常见安装目录找。
 
 14 个工具：
 
@@ -175,14 +180,23 @@ python tools/regen_doc.py                     # 只按 coverage.json 重写文�
 ## 8. 测试
 
 ```bash
-python tests/mcp_smoke.py   <any.vpp>   # MCP 协议 + 只读
-python tests/test_e2e.py    <any.vpp>   # XML 通道 + Open API + 规格画图，全链路
-python tools/probe_types.py <any.vpp>   # 工厂类型探测
+python -m unittest discover -s tests -p "test_core.py" -v   # 纯内核，不需要装 VP
+python tests/manual/test_e2e.py <any.vpp>                   # XML + Open API + 规格画图，约 1 分钟
+python tests/manual/mcp_smoke.py <any.vpp>                  # MCP 协议 + 只读
 ```
 
-都只操作临时副本。
+前一组是 CI 跑的（27 个用例，16 ms），后两组需要真实安装，只操作临时副本。
 
-## 9. 踩坑（维护者笔记）
+## 9. 许可与边界
+
+MIT。与 Visual Paradigm 官方无关：本工具驱动**已授权**的本地安装，不激活、不修改、
+不再分发该产品。社区版的能力限制（XMI、代码生成等被门禁挡住）如实报 `edition-gated`，
+不做绕过。
+
+贡献方式见 `CONTRIBUTING.md`，安全问题见 `SECURITY.md`，版本记录见 `CHANGELOG.md`。
+
+
+## 10. 踩坑（维护者笔记）
 
 - VP 自带 JRE **没有 `jdk.zipfs`**：`javac -cp foo.jar` 报"没有任何文件系统提供程序处理文件"。
   先把 `openapi.jar` 解成目录再编译。

@@ -34,12 +34,15 @@ class Result(object):
 
 
 class VpRuntime(object):
-    CANDIDATES = (
-        r'E:\Visual Paradigm CE 18.1',
-        r'C:\Program Files\Visual Paradigm CE 18.1',
-        r'C:\Program Files\Visual Paradigm 18.1',
-        r'C:\Program Files (x86)\Visual Paradigm CE 18.1',
-    )
+    """One installation.
+
+    Discovery order: explicit argument -> VPCE_HOME / VP_HOME -> the Windows
+    registry entry the installer writes -> a scan of the usual install roots.
+    Nothing here assumes a particular drive letter.
+    """
+
+    #: directory names the installer has used over the years
+    NAME_PATTERN = ('Visual Paradigm', 'Visual_Paradigm', 'VisualParadigm')
 
     def __init__(self, home=None):
         self.home = self._resolve(home)
@@ -54,17 +57,80 @@ class VpRuntime(object):
     def _resolve(cls, home):
         if home:
             home = os.path.abspath(home)
-            if not os.path.isdir(home):
-                raise ConfigurationError('VP_HOME does not exist: %s' % home)
+            if not cls._looks_like_install(home):
+                raise ConfigurationError(
+                    '%s does not look like a Visual Paradigm installation '
+                    '(expected lib/openapi.jar and bin/)' % home)
             return home
         env = os.environ.get('VPCE_HOME') or os.environ.get('VP_HOME')
         if env:
             return os.path.abspath(env)
-        for candidate in cls.CANDIDATES:
-            if os.path.isdir(candidate):
+        for candidate in cls._registry_homes() + cls._scan_roots():
+            if cls._looks_like_install(candidate):
                 return candidate
         raise ConfigurationError(
             'Visual Paradigm not found. Set VPCE_HOME or pass --vp-home.')
+
+    @staticmethod
+    def _looks_like_install(path):
+        return (os.path.isdir(path)
+                and os.path.isdir(os.path.join(path, 'lib'))
+                and os.path.isdir(os.path.join(path, 'bin')))
+
+    @staticmethod
+    def _registry_homes():
+        if os.name != 'nt':
+            return []
+        try:
+            import winreg
+        except ImportError:
+            return []
+        keys = (
+            (winreg.HKEY_LOCAL_MACHINE, r'SOFTWARE\Visual Paradigm'),
+            (winreg.HKEY_LOCAL_MACHINE, r'SOFTWARE\WOW6432Node\Visual Paradigm'),
+            (winreg.HKEY_CURRENT_USER, r'SOFTWARE\Visual Paradigm'),
+        )
+        found = []
+        for root, path in keys:
+            try:
+                with winreg.OpenKey(root, path) as key:
+                    index = 0
+                    while True:
+                        try:
+                            name = winreg.EnumKey(key, index)
+                        except OSError:
+                            break
+                        index += 1
+                        try:
+                            with winreg.OpenKey(key, name) as sub:
+                                value, _ = winreg.QueryValueEx(sub, 'InstallDir')
+                                if value:
+                                    found.append(value)
+                        except OSError:
+                            continue
+            except OSError:
+                continue
+        return found
+
+    @classmethod
+    def _scan_roots(cls):
+        if os.name == 'nt':
+            roots = [os.environ.get('ProgramFiles'), os.environ.get('ProgramFiles(x86)')]
+            roots += ['%s:\\' % letter for letter in 'CDEFG']
+        else:
+            roots = ['/opt', '/usr/local', os.path.expanduser('~/Applications')]
+        found = []
+        for root in roots:
+            if not root or not os.path.isdir(root):
+                continue
+            try:
+                entries = sorted(os.listdir(root))
+            except OSError:
+                continue
+            for name in entries:
+                if any(pattern.lower() in name.lower() for pattern in cls.NAME_PATTERN):
+                    found.append(os.path.join(root, name))
+        return found
 
     def _find_java(self):
         exe = 'java.exe' if os.name == 'nt' else 'java'

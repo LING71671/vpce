@@ -1,0 +1,39 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  unit:
+    name: unit (${{ matrix.os }}, py${{ matrix.python }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python: ['3.8', '3.11', '3.13']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Unit tests
+        run: python -m unittest discover -s tests -p "test_core.py" -v
+      - name: Byte-compile everything
+        run: python -m compileall -q vpce tools tests
+
+  no-hardcoded-paths:
+    name: no machine-specific paths in source
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check
+        run: |
+          if grep -rInE '[A-Za-z]:\\\\Python|[A-Za-z]:\\\\(Users|Visual Paradigm)' \
+             vpce tests tools --include='*.py'; then
+            echo "::error::source contains an absolute Windows path"
+            exit 1
+          fi
+          echo "clean"
