@@ -17,6 +17,7 @@ vpce draw examples/order-system.json --project demo.vpp --out png/
 |---|---|
 | `docs/API.md` | 接口文档：CLI 每个命令、14 个 MCP 工具、规格 schema、Open API 语句语法、错误分类、产物格式 |
 | `docs/GOTCHAS.md` | 踩坑笔记：构建、传参、模型操作、测量四类陷阱 |
+| `docs/INSTALL-AI.md` | 给 AI 的安装提示词（整段复制粘贴，它自己装完并验证） |
 | `ARCHITECTURE.md` | 五层分层与依赖规则、加功能时的落点 |
 | `COVERAGE.md` | 覆盖率台账（脚本生成，不许手改） |
 | `skills/vpce-diagram-authoring/` | 给 AI 用的技能包：选型表、规格写法、验收清单、报错处置 |
@@ -41,6 +42,9 @@ python java/bridge/build.py        # 用 VP 自带 javac 编译插件
 python -m vpce bridge --install    # 装到 %APPDATA%\VisualParadigm\plugins\com.vpce.bridge
 python -m vpce status              # 确认能找到安装与命令
 ```
+
+不想自己敲？把 [`docs/INSTALL-AI.md`](docs/INSTALL-AI.md) 里的提示词整段丢给 AI，它会把
+上面三步做完并汇报结果。
 
 安装位置解析顺序：`--vp-home` → `VPCE_HOME` / `VP_HOME` → 安装器写的注册表项 →
 扫常见安装根目录。不写死盘符。
