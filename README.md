@@ -16,6 +16,7 @@ vpce draw examples/order-system.json --project demo.vpp --out png/
 | 文件 | 内容 |
 |---|---|
 | `docs/API.md` | 接口文档：CLI 每个命令、14 个 MCP 工具、规格 schema、Open API 语句语法、错误分类、产物格式 |
+| `docs/GOTCHAS.md` | 踩坑笔记：构建、传参、模型操作、测量四类陷阱 |
 | `ARCHITECTURE.md` | 五层分层与依赖规则、加功能时的落点 |
 | `COVERAGE.md` | 覆盖率台账（脚本生成，不许手改） |
 | `skills/vpce-diagram-authoring/` | 给 AI 用的技能包：选型表、规格写法、验收清单、报错处置 |
@@ -196,16 +197,7 @@ MIT。与 Visual Paradigm 官方无关：本工具驱动**已授权**的本地�
 贡献方式见 `CONTRIBUTING.md`，安全问题见 `SECURITY.md`，版本记录见 `CHANGELOG.md`。
 
 
-## 10. 踩坑（维护者笔记）
+## 10. 踩坑
 
-- VP 自带 JRE **没有 `jdk.zipfs`**：`javac -cp foo.jar` 报"没有任何文件系统提供程序处理文件"。
-  先把 `openapi.jar` 解成目录再编译。
-- 插件只认 `<pluginDir>/plugin.xml` + `<pluginDir>/lib/*.jar`；插件根的 jar 不进 classloader。
-- `VPPlugin` 只有 `loaded(VPPluginInfo)` / `unloaded()`；命令行入口是 `VPPluginCommandLineSupport.invoke(String[])`。
-- `-pluginargs` 按空格切分 → 脚本整体 base64 成单 token；回包用 stdout 的 `VPCE_RESP <base64>`。
-- 18.1 的 `IProject` 没有 `getModel()` / `addChild()`；建元素靠
-  `IModelElementFactory.instance().create(type)` + `DiagramManager.createDiagramElement()`，
-  后者顺带把元素挂到工程根（新建图的 `getParentModel()` 是 null）。
-- 新图形没有几何：必须 `setBounds` + `setRequestResetCaption(true)`，否则渲染出空框。
-- 反射要落到**接口**的 Method：实现类多为包私有（`v.bgo.ctf`），直接 invoke 会 `IllegalAccessException`。
-- 用独立 `APPDATA` 跑会停在 `License not found`（CE 许可在用户配置里），隔离测试跑不通。
+构建、传参、模型操作、测量四类陷阱，以及它们的成因，都在
+[`docs/GOTCHAS.md`](docs/GOTCHAS.md)。改代码前先看。

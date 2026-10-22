@@ -42,6 +42,7 @@ python -m vpce bridge --install
 The build step unpacks `lib/openapi.jar` into `java/bridge/build/api` first:
 the JDK bundled with Visual Paradigm ships `jdk.compiler` but not `jdk.zipfs`,
 so `javac -cp something.jar` fails with "no file system provider handles file".
+More of these are in [`docs/GOTCHAS.md`](docs/GOTCHAS.md).
 
 ## Tests
 

@@ -147,3 +147,6 @@ python tests/mcp_smoke.py <any.vpp>                         # needs VP
 
 MIT. Not affiliated with Visual Paradigm. The tool drives a licensed local
 installation; it does not activate, modify or redistribute the product.
+
+Build traps, argument passing, model-operating quirks and measurement
+pitfalls are collected in [`docs/GOTCHAS.md`](docs/GOTCHAS.md).
