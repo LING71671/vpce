@@ -1,5 +1,22 @@
 # Changelog
 
+## Unreleased
+
+**Faster discovery**
+
+- `vpce introspect` and `vpce search` accept several names per call, and
+  `vp_api_introspect` / `vp_api_search` accept `class_names` / `patterns`
+  arrays. Probing five classes used to cost five launches (~2.5 min); one call
+  now covers all of them.
+- Discovery results are cached per `openapi.jar` fingerprint under
+  `%TEMP%\vpce-cache\bridge\`: repeating a lookup drops from ~36 s to ~1 s.
+  `--refresh` (CLI) / `refresh: true` (MCP) forces a new probe.
+
+Measured on a small project: one cold call with two classes 35.9 s, the same
+call served from cache 1.2 s. A single call always pays JVM start, Visual
+Paradigm bootstrap and a project open — `-project` is mandatory for
+`com.vp.cmd.Plugin`, so there is no cheaper launch form.
+
 ## 1.0.0 — 2026-10-22
 
 First public release.

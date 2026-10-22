@@ -124,14 +124,13 @@ def cmd_api(args, app):
 
 
 def cmd_introspect(args, app):
-    sys.stdout.write(app.bind(args.project).apis().introspect(args.cls) + '\n')
+    sys.stdout.write(app.bind(args.project).apis().introspect(args.cls, refresh=args.refresh) + '\n')
     return 0
 
 
 def cmd_search(args, app):
-    sys.stdout.write(app.bind(args.project).apis().search(args.pattern) + '\n')
+    sys.stdout.write(app.bind(args.project).apis().search(args.pattern, refresh=args.refresh) + '\n')
     return 0
-
 
 def cmd_bridge(args, app):
     if args.install:
@@ -227,13 +226,16 @@ def build_parser():
     sp.add_argument('expr', nargs='*')
     sp.add_argument('--file')
 
-    sp = add('introspect', cmd_introspect, 'dump methods and constants of an Open API class')
+    sp = add('introspect', cmd_introspect,
+             'dump methods and constants of one or more Open API classes')
     sp.add_argument('project')
-    sp.add_argument('cls')
+    sp.add_argument('cls', nargs='+', metavar='class')
+    sp.add_argument('--refresh', action='store_true', help='ignore the discovery cache')
 
     sp = add('search', cmd_search, 'find Open API classes by name fragment')
     sp.add_argument('project')
-    sp.add_argument('pattern')
+    sp.add_argument('pattern', nargs='+', metavar='pattern')
+    sp.add_argument('--refresh', action='store_true', help='ignore the discovery cache')
 
     sp = add('bridge', cmd_bridge, 'install/inspect the Open API bridge plugin')
     sp.add_argument('project', nargs='?')

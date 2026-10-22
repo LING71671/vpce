@@ -109,8 +109,13 @@ class ApiService(object):
     def run(self, script):
         return self.api.run_script(script)
 
-    def introspect(self, class_name):
-        return self.api.introspect(class_name)
+    def introspect(self, class_name, refresh=False):
+        """One class, or several in a single launch."""
+        if isinstance(class_name, (list, tuple)):
+            return self.api.introspect_many(class_name, refresh=refresh)
+        return self.api.introspect(class_name, refresh=refresh)
 
-    def search(self, pattern):
-        return self.api.search(pattern)
+    def search(self, pattern, refresh=False):
+        if isinstance(pattern, (list, tuple)):
+            return self.api.search_many(pattern, refresh=refresh)
+        return self.api.search(pattern, refresh=refresh)

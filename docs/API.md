@@ -151,9 +151,14 @@ vpce api <project> --file script.vpce
 
 #### `introspect` / `search`
 ```
-vpce introspect <project> <class>     # 列方法 + 静态常量（含实际值）
-vpce search <project> <pattern>       # 在 com.vp.plugin.** 里按名字片段找类
+vpce introspect <project> <class> [class ...]   # 列方法 + 静态常量（含实际值）
+vpce search <project> <pattern> [pattern ...]   # 在 com.vp.plugin.** 里按名字片段找类
 ```
+可以一次给多个名字，**一个进程内全部查完**。每次调用都要起 JVM、初始化 VP、打开工程
+（20–40 秒），所以查 5 个类请用一次调用，不要发 5 次。
+
+查询结果按 `openapi.jar` 的指纹缓存在 `%TEMP%\vpce-cache\bridge\`：同一个问题第二次
+约 1 秒。VP 升级后 `openapi.jar` 指纹变化，缓存自动失效；要强制重查加 `--refresh`。
 
 #### `mcp`
 ```
@@ -189,8 +194,8 @@ stdio 启动 MCP 服务。`--read-only` 隐藏 5 个写工具。
 | `vp_diagram_list` | 否 | `project*`, `refresh?` |
 | `vp_export_xml` | 否 | `project*`, `out?` |
 | `vp_export_images` | 否 | `project*`, `out*`, `diagram?`, `format?` |
-| `vp_api_introspect` | 否 | `project*`, `class_name*` |
-| `vp_api_search` | 否 | `project*`, `pattern*` |
+| `vp_api_introspect` | 否 | `project*`, `class_name` 或 `class_names[]` |
+| `vp_api_search` | 否 | `project*`, `pattern` 或 `patterns[]` |
 | `vp_draw` | 是 | `project*`, `spec*` 或 `spec_path*`, `out?`, `format?`, `plan?` |
 | `vp_create_class` | 是 | `project*`, `name*`, `attributes?`, `diagram?` |
 | `vp_import_xml` | 是 | `project*`, `file*`, `match_by_name?` |

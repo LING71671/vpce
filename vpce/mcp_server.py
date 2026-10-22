@@ -96,11 +96,17 @@ def h_api(args):
 
 
 def h_introspect(args):
-    return {'text': _app(args).apis().introspect(args['class_name'])}
+    names = args.get('class_names') or args.get('class_name')
+    if not names:
+        raise VpceError('vp_api_introspect needs "class_name" or "class_names"')
+    return {'text': _app(args).apis().introspect(names, refresh=bool(args.get('refresh')))}
 
 
 def h_search(args):
-    return {'text': _app(args).apis().search(args['pattern'])}
+    patterns = args.get('patterns') or args.get('pattern')
+    if not patterns:
+        raise VpceError('vp_api_search needs "pattern" or "patterns"')
+    return {'text': _app(args).apis().search(patterns, refresh=bool(args.get('refresh')))}
 
 
 def h_bridge(args):
@@ -344,30 +350,37 @@ TOOLS = [
     },
     {
         'name': 'vp_api_introspect',
-        'description': 'Dump methods and static constants of an Open API class.',
+        'description': 'Dump methods and static constants of one or more Open API classes. '
+                       'Pass every class you need in ONE call: each launch costs ~10 s, so '
+                       'one call with five names is far better than five calls.',
         'write': False, 'handler': h_introspect,
         'schema': {
             'type': 'object',
             'properties': {
                 'project': {'type': 'string'},
                 'class_name': {'type': 'string'},
+                'class_names': {'type': 'array', 'items': {'type': 'string'}},
+                'refresh': {'type': 'boolean', 'description': 'ignore the discovery cache'},
                 'vp_home': {'type': 'string'},
             },
-            'required': ['project', 'class_name'],
+            'required': ['project'],
         },
     },
     {
         'name': 'vp_api_search',
-        'description': 'Search the Open API class surface by name fragment.',
+        'description': 'Search the Open API class surface by name fragment. Accepts several '
+                       'patterns in one call.',
         'write': False, 'handler': h_search,
         'schema': {
             'type': 'object',
             'properties': {
                 'project': {'type': 'string'},
                 'pattern': {'type': 'string'},
+                'patterns': {'type': 'array', 'items': {'type': 'string'}},
+                'refresh': {'type': 'boolean'},
                 'vp_home': {'type': 'string'},
             },
-            'required': ['project', 'pattern'],
+            'required': ['project'],
         },
     },
     {

@@ -66,9 +66,16 @@ python -m vpce bridge                       # installed 必须是 true
 `unknown element type 'X'; did you mean ...`。拿不准就查：
 
 ```bash
-python -m vpce search <project> Diagram        # 按名字找类
-python -m vpce introspect <project> IDiagram   # 看某个 API 能给什么
+python -m vpce search <project> Diagram DBTable DBColumn   # 多个词一次查
+python -m vpce introspect <project> IDBTable IDBColumn     # 多个类一次查
 ```
+
+**探查要合并成一次调用。** 每次 `vpce` 调用都要起 JVM、初始化 VP、打开工程，
+实测单次 20–40 秒——一个类一次调用会让你等两分钟。规则：
+
+- 一次给全：`introspect A B C`、`vp_api_introspect` 用 `class_names` 数组
+- 同样的问题重复问会走缓存（约 1 秒），但**第一次仍然要 30 秒**，所以先想清楚要查什么
+- 能靠 `references/diagram-recipes.md` 里的表回答的，就别去探 API
 
 ## 2. 写规格
 
