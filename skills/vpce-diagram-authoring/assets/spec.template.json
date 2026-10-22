@@ -1,0 +1,38 @@
+{
+  "diagram": "ClassDiagram",
+  "name": "Order System",
+  "nodes": [
+    {
+      "id": "customer",
+      "type": "Class",
+      "name": "Customer",
+      "attributes": ["id:long", "email:string", "name:string"],
+      "operations": ["placeOrder"]
+    },
+    {
+      "id": "order",
+      "type": "Class",
+      "name": "Order",
+      "attributes": ["id:long", "createdAt:date", "total:double"],
+      "operations": ["submit", "cancel"]
+    },
+    {
+      "id": "item",
+      "type": "Class",
+      "name": "OrderItem",
+      "attributes": ["quantity:int", "unitPrice:double"]
+    },
+    {
+      "id": "product",
+      "type": "Class",
+      "name": "Product",
+      "attributes": ["sku:string", "price:double"]
+    }
+  ],
+  "edges": [
+    {"from": "customer", "to": "order", "type": "Association", "name": "places"},
+    {"from": "order", "to": "item", "type": "Association", "name": "contains"},
+    {"from": "item", "to": "product", "type": "Association", "name": "refers to"}
+  ],
+  "layout": {"mode": "layered", "x": 40, "y": 40}
+}

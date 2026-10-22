@@ -11,6 +11,15 @@ vpce draw examples/order-system.json --project demo.vpp --out png/
 
 已验证环境：**Visual Paradigm Community Edition 18.1 (build 20261011)，Windows 11，内置 Temurin JRE 11.0.16.1**。
 
+文档索引：
+
+| 文件 | 内容 |
+|---|---|
+| `docs/API.md` | 接口文档：CLI 每个命令、14 个 MCP 工具、规格 schema、Open API 语句语法、错误分类、产物格式 |
+| `ARCHITECTURE.md` | 五层分层与依赖规则、加功能时的落点 |
+| `COVERAGE.md` | 覆盖率台账（脚本生成，不许手改） |
+| `skills/vpce-diagram-authoring/` | 给 AI 用的技能包：选型表、规格写法、验收清单、报错处置 |
+
 ---
 
 ## 1. 两条通道
