@@ -106,3 +106,31 @@ VP 的实现类基本是包私有的（`v.bgo.ctf`、`v.bgg.d`）。在实现类
 
 用独立 `APPDATA` 跑（想把配置隔离到工作目录）会停在 `License not found`——
 CE 的社区许可存在用户配置里，所以隔离测试跑不通，必须用真实配置。
+
+## 未解决：ER 图的列在无头导出里画不出来
+
+现象：`vpce draw` 建的 ER 图，表框只有表名，没有列；用 GUI 打开能看到列。
+
+已排除（都是实测）：
+
+| 假设 | 结论 |
+|---|---|
+| 无头导出本身不支持 | **否**。把 GUI 建的 exercise2.vpp 复制出来无头导出，列、主键图标、FK 全都在 |
+| 模型缺列 | **否**。导出的 XML 里 `DBTable/ModelChildren` 有两个 `DBColumn`，属性与 GUI 建的逐字段一致 |
+| 形状属性不同 | **否**。GUI 与生成的 `<DBTable>` 形状，属性集合与子元素完全一致，只有几何值不同 |
+| 图级别开关（`_showColumnTypes` 等） | **部分是**。在已有 ER 图的老工程里新建表，列**能画出来**（只是位置贴在框底）；在没有任何 ER 图史的新工程里建，列为空 |
+| `setShowColumnsMode` | 无效。0（跟随图）和 1（全显示）渲染结果一样 |
+| `setRequestFitSize(true)` | **更糟**。会把框缩到只剩表名（6x6 内容） |
+| 复制图 API | 不存在，`DiagramManager` 只有 `createDiagram(String)` |
+
+当前可用做法（有实测支撑）：
+
+- 目标工程里**已经有一个 GUI 建的 ER 图**时，`vpce draw` 新建的表能画出列，
+  但行会压在框底，需要给足高度并手工微调。
+- 全新工程里直接建 ER 图，列不出现。
+
+下一步要查的方向：表形状的 caption 尺寸（GUI 是 `@width=220,@height=16,@side=12`，
+生成的是 `0/0/0`）与列行起始位置的关系；以及 `IDiagramUIModel` 的图属性只有 getter
+（`IDiagramProperty` 没有 setter），图级开关要么靠导入时继承，要么得另找入口。
+
+`tools/probe_erd_*.py` 是这轮留下的探针，别删。

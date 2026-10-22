@@ -18,6 +18,12 @@ python tools/<script>.py <any-project.vpp>
 | `dump_model_types.py` | Regenerate `vpce/core/model_types.json` (1455 names) from `IModelElementFactory`. | JSON |
 | `dump_diagram_types.py` | Regenerate `vpce/core/diagram_types.json` (106 names) from `IDiagramTypeConstants`. | JSON |
 | `classdump.py` | Minimal `.class` parser — `javap` is not available (the bundled JRE ships `jdk.compiler` without `jdk.zipfs`). | constant pool + methods |
+| `inspect_shape.py` | Dump the raw XML of a shape, to compare a hand-made diagram with a generated one. | shape snippet / attribute table |
+| `probe_erd_columns.py` | Try shape options (`showColumnsMode`, fit size) on ERD tables. | printed PNG sizes |
+| `probe_erd_shape.py` | Try creation orders (columns before/after shape, rebind). | printed PNG sizes |
+| `probe_erd_xml.py` | Build the same ERD through `ImportXML` instead of the API. | printed PNG sizes |
+| `probe_erd_mix.py` | Add API-created tables to a GUI-made ERD to isolate the cause. | PNG path |
+| `probe_erd_patch.py` | Inject the GUI diagram's column options into a generated one. | PNG path |
 | `bench.py` | Time one bridge call: JVM start, VP bootstrap, project open, statement run. | printed table |
 | `regen_doc.py` | Rewrite `COVERAGE.md` from an existing `coverage.json` without re-probing. | `COVERAGE.md` |
 
